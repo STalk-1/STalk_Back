@@ -1,6 +1,19 @@
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 server:
   port: 8080
 
 spring:
   application:
     name: stalk-api
+
+# dev에서만 느슨하게 CORS 허용(필요에 따라 프론트 도메인으로 좁히rl)
+app:
+  cors:
+    allowed-origins:
+      - "*"
+      # 배포된 프론트 도메인도 여기에 추가 (예: https://stalk-front.vercel.app)
