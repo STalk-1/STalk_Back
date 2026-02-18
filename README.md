@@ -1,7 +1,7 @@
 # STalk_Back
 
-Swagger 
+Swagger: 
 https://playmcpfinder.store/swagger-ui/index.html
 
-Websocket
+Websocket: 
 wss://playmcpfinder.store/ws
