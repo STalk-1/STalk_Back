@@ -6,6 +6,8 @@ springdoc:
 
 server:
   port: 8080
+  # Spring이 실제 외부 프로토콜은 https 라고 인식하게 함
+  forward-headers-strategy: framework
 
 spring:
   application:
