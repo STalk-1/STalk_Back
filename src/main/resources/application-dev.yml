@@ -19,3 +19,10 @@ app:
     allowed-origins:
       - "*"
       # 배포된 프론트 도메인도 여기에 추가 (예: https://stalk-front.vercel.app)
+
+kakao:
+  oauth:
+    client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: ${KAKAO_REDIRECT_URI}
+    token-uri: https://kauth.kakao.com/oauth/token
+    user-uri: https://kapi.kakao.com/v2/user/me
