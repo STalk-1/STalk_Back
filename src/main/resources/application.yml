@@ -21,6 +21,6 @@ app:
 kakao:
     oauth:
         client-id: ${KAKAO_CLIENT_ID}
-        redirect-uri: ${KAKAO_REDIRECT_URI_DEV}
+        redirect-uri: ${KAKAO_REDIRECT_URI}
         token-uri: https://kauth.kakao.com/oauth/token
         user-uri: https://kapi.kakao.com/v2/user/me
