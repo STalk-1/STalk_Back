@@ -5,6 +5,7 @@ import com.stalk.api.auth.dto.KakaoTokenResponse;
 import com.stalk.api.auth.dto.KakaoUserResponse;
 import com.stalk.api.auth.service.KakaoOauthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth/kakao")
@@ -26,6 +28,7 @@ public class KakaoAuthController {
     // 프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환
     @GetMapping("/login-url")
     public ResponseEntity<String> loginUrl() {
+        log.info("[KAKAO] Login URL requested");
         String redirect = URLEncoder.encode(props.redirectUri(), StandardCharsets.UTF_8);
         String url = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
@@ -45,7 +48,9 @@ public class KakaoAuthController {
             @RequestParam(required = false) String error,
             @RequestParam(required = false, name = "error_description") String errorDescription
     ) {
+        log.info("[KAKAO] Callback received");
         if (error != null) {
+            log.warn("[KAKAO] Callback error. error={}, description={}", error, errorDescription);
             throw new IllegalStateException("Kakao OAuth error=" + error + " desc=" + errorDescription);
         }
         // 토큰 요청
@@ -53,6 +58,9 @@ public class KakaoAuthController {
 
         // 사용자 정보 조회
         KakaoUserResponse user = kakaoOauthService.fetchUser(token.accessToken());
+
+        log.info("[KAKAO] Login success. kakaoId={}", user.id());
+
 
         return ResponseEntity.ok(user);
     }

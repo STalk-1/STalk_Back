@@ -4,12 +4,15 @@ import com.stalk.api.auth.config.KakaoOauthProperties;
 import com.stalk.api.auth.dto.KakaoTokenResponse;
 import com.stalk.api.auth.dto.KakaoUserResponse;
 import com.stalk.api.auth.exception.KakaoApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
+@Slf4j
 @Service
 public class KakaoOauthService {
 
@@ -47,6 +50,9 @@ public class KakaoOauthService {
      * }
      */
     public KakaoTokenResponse exchangeCodeForToken(String code) {
+
+        log.info("[KAKAO] Token exchange start. redirectUri={}", props.redirectUri());
+
         // Token요청을 위한 Form Data 구성
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.add("grant_type", "authorization_code");
@@ -55,14 +61,24 @@ public class KakaoOauthService {
         form.add("code", code);
 
         try {
-            return restClient.post()
+            KakaoTokenResponse token = restClient.post()
                     .uri(props.tokenUri())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .accept(MediaType.APPLICATION_JSON)
                     .body(form)
                     .retrieve()
                     .body(KakaoTokenResponse.class);
-        } catch (Exception e) {
+            if (token != null) {
+                log.info("[KAKAO] Token exchange success. expiresIn={}, scope={}", token.expiresIn(), token.scope());
+            } else{
+                log.warn("[KAKAO] Token exchange returned null body");
+            }
+            return token;
+        } catch (RestClientResponseException e) {
+            log.error("[KAKAO] Token exchange failed. status={}, body={}", e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new KakaoApiException("Kakao token API failed: " + e.getMessage());
+        } catch (Exception e){
+            log.error("[KAKAO] Token exchange failed: {}", e.getMessage(), e);
             throw new KakaoApiException("Kakao token API failed: " + e.getMessage());
         }
     }
@@ -95,13 +111,24 @@ public class KakaoOauthService {
      */
     public KakaoUserResponse fetchUser(String accessToken) {
         try {
-            return restClient.get()
+            KakaoUserResponse user = restClient.get()
                     .uri(props.userUri())
                     .header("Authorization", "Bearer " + accessToken)
                     .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .body(KakaoUserResponse.class);
-        } catch (Exception e) {
+            if (user != null) {
+                log.info("[KAKAO] Fetch user success. kakaoId={}", user.id());
+            } else {
+                log.warn("[KAKAO] Fetch user returned null body");
+            }
+            return user;
+
+        } catch (RestClientResponseException e) {
+            log.error("[KAKAO] Fetch user failed. status={}, body={}", e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw new KakaoApiException("Kakao user API failed: " + e.getMessage());
+        } catch (Exception e){
+            log.error("[KAKAO] Fetch user failed: {}", e.getMessage(), e);
             throw new KakaoApiException("Kakao user API failed: " + e.getMessage());
         }
     }
