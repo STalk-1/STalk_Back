@@ -4,23 +4,21 @@ import com.stalk.api.auth.config.KakaoOauthProperties;
 import com.stalk.api.auth.dto.KakaoTokenResponse;
 import com.stalk.api.auth.dto.KakaoUserResponse;
 import com.stalk.api.auth.exception.KakaoApiException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class KakaoOauthService {
 
     private final KakaoOauthProperties props;
-    private final WebClient webClient;
+    private final RestClient restClient;
 
-    public KakaoOauthService(KakaoOauthProperties props, WebClient.Builder builder) {
+    public KakaoOauthService(KakaoOauthProperties props, RestClient.Builder builder) {
         this.props = props;
-        this.webClient = builder.build();
+        this.restClient = builder.build();
     }
 
     // 토큰 요청
@@ -56,17 +54,17 @@ public class KakaoOauthService {
         form.add("redirect_uri", props.redirectUri());
         form.add("code", code);
 
-        return webClient.post()
-                .uri(props.tokenUri())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromFormData(form))
-                .retrieve()
-                .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
-                        resp -> resp.bodyToMono(String.class)
-                                .map(body -> new KakaoApiException("Kakao token API failed: " + body)))
-                .bodyToMono(KakaoTokenResponse.class)
-                .block();
+        try {
+            return restClient.post()
+                    .uri(props.tokenUri())
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(form)
+                    .retrieve()
+                    .body(KakaoTokenResponse.class);
+        } catch (Exception e) {
+            throw new KakaoApiException("Kakao token API failed: " + e.getMessage());
+        }
     }
 
     // 사용자 정보 조회
@@ -96,16 +94,16 @@ public class KakaoOauthService {
      * }
      */
     public KakaoUserResponse fetchUser(String accessToken) {
-        return webClient.post()
-                .uri(props.userUri())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
-                        resp -> resp.bodyToMono(String.class)
-                                .map(body -> new KakaoApiException("Kakao user API failed: " + body)))
-                .bodyToMono(KakaoUserResponse.class)
-                .block();
+        try {
+            return restClient.get()
+                    .uri(props.userUri())
+                    .header("Authorization", "Bearer " + accessToken)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(KakaoUserResponse.class);
+        } catch (Exception e) {
+            throw new KakaoApiException("Kakao user API failed: " + e.getMessage());
+        }
     }
 
 }
