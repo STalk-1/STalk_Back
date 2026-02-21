@@ -47,8 +47,15 @@ jobs:
             # Docker Hub login (VM에서도 pull 위해 필요)
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            # 3. 환경 변수 설정 및 최신 이미지 가져오기 (pull) 
-            export DOCKER_IMAGE="${{ secrets.DOCKERHUB_IMAGE }}"
+            # 3. 환경 변수 설정
+            cat > .env <<EOF
+            DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_REDIRECT_URI_DEV=${{ secrets.KAKAO_REDIRECT_URI_DEV }}
+            EOF
+            chmod 600 .env
+            
+            #4. 최신 이미지 가져오기 (pull) 
             docker compose pull
             
             # 4. 컨테이너 재시작 (변경사항 반영)
