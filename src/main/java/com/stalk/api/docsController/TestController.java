@@ -34,5 +34,19 @@ public class TestController {
         );
     }
 
+    @GetMapping("/all")
+    public String allAccess() {
+        return "누구나 접근 가능한 데이터";
+    }
+
+    @GetMapping("/user")
+    public String userAccess() {
+        return "로그인 유저만 접근 가능한 데이터";
+    }
+
+    @GetMapping("/admin")
+    public String adminAccess() {
+        return "관리자만 접근 가능한 데이터";
+    }
 
 }
