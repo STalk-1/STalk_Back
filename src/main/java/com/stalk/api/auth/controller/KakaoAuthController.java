@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +26,6 @@ public class KakaoAuthController {
     @GetMapping("/login-url")
     public ResponseEntity<String> loginUrl() {
         log.info("[KAKAO] Login URL requested");
-        String redirect = URLEncoder.encode(props.redirectUri(), StandardCharsets.UTF_8);
         String url = UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
                 .queryParam("response_type", "code")
