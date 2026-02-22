@@ -24,3 +24,9 @@ kakao:
         redirect-uri: ${KAKAO_REDIRECT_URI}
         token-uri: https://kauth.kakao.com/oauth/token
         user-uri: https://kapi.kakao.com/v2/user/me
+
+jwt:
+    issuer: stalk
+    secret: ${JWT_SECRET}
+    access-token-seconds: 900        # 15분
+    refresh-token-seconds: 1209600   # 14일

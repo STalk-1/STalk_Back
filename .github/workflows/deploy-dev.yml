@@ -52,6 +52,7 @@ jobs:
             DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_REDIRECT_URI_DEV=${{ secrets.KAKAO_REDIRECT_URI_DEV }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
             EOF
             chmod 600 .env
             
