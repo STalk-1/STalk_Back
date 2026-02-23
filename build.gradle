@@ -49,7 +49,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-websocket-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-//	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2'
 //	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 //	runtimeOnly 'org.postgresql:postgresql'
 //	testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'

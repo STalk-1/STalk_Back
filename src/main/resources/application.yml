@@ -11,6 +11,25 @@ spring:
     application:
         name: stalk-api
 
+    datasource:
+        url: jdbc:h2:mem:stalk;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
+
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+        # show-sql: true
+
+    h2:
+        console:
+            enabled: true
+            path: /h2-console
+
 # dev에서만 느슨하게 CORS 허용(필요에 따라 프론트 도메인으로 좁히rl)
 app:
     cors:
