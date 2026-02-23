@@ -3,6 +3,7 @@ package com.stalk.api.auth.controller;
 import com.stalk.api.auth.config.KakaoOauthProperties;
 import com.stalk.api.auth.dto.KakaoTokenResponse;
 import com.stalk.api.auth.dto.KakaoUserResponse;
+import com.stalk.api.auth.service.KakaoLoginService;
 import com.stalk.api.auth.service.KakaoOauthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/api/auth/kakao")
 public class KakaoAuthController {
 
-    private final KakaoOauthService kakaoOauthService;
+    private final KakaoLoginService kakaoLoginService;
     private final KakaoOauthProperties props;
 
     // 프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환
@@ -39,7 +40,7 @@ public class KakaoAuthController {
 
     // 카카오가 code를 붙여서 redirect_uri로 콜백
     @GetMapping("/callback")
-    public ResponseEntity<KakaoUserResponse> callback(
+    public ResponseEntity<KakaoLoginService.LoginResult> callback(
             @RequestParam String code,
             @RequestParam(required = false) String error,
             @RequestParam(required = false, name = "error_description") String errorDescription
@@ -49,15 +50,8 @@ public class KakaoAuthController {
             log.warn("[KAKAO] Callback error. error={}, description={}", error, errorDescription);
             throw new IllegalStateException("Kakao OAuth error=" + error + " desc=" + errorDescription);
         }
-        // 토큰 요청
-        KakaoTokenResponse token = kakaoOauthService.exchangeCodeForToken(code);
 
-        // 사용자 정보 조회
-        KakaoUserResponse user = kakaoOauthService.fetchUser(token.accessToken());
-
-        log.info("[KAKAO] Login success. kakaoId={}", user.id());
-
-
-        return ResponseEntity.ok(user);
+        var result = kakaoLoginService.loginByAuthorizationCode(code);
+        return ResponseEntity.ok(result);
     }
 }
