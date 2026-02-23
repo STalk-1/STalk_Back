@@ -1,11 +1,14 @@
-package com.stalk.api.docsController;
+package com.stalk.api.global.controller;
 
+import com.stalk.api.user.UserRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/test")
 @Tag(name = "Test API", description = "Swagger 확인용 API")
@@ -34,5 +37,26 @@ public class TestController {
         );
     }
 
+    @GetMapping("/all")
+    public String allAccess() {
+        return "누구나 접근 가능한 데이터";
+    }
+
+    @GetMapping("/user")
+    public String userAccess() {
+        return "로그인 유저만 접근 가능한 데이터";
+    }
+
+    @GetMapping("/admin")
+    public String adminAccess() {
+        return "관리자만 접근 가능한 데이터";
+    }
+
+    private final UserRepository userRepository;
+
+    @GetMapping("/db/users")
+    public Object users() {
+        return userRepository.findAll();
+    }
 
 }

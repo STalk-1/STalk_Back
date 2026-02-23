@@ -118,7 +118,7 @@ public class KakaoOauthService {
                     .retrieve()
                     .body(KakaoUserResponse.class);
             if (user != null) {
-                log.info("[KAKAO] Fetch user success. kakaoId={}", user.id());
+                log.info("[KAKAO] Fetch user success. kakaoId={}, kakaoNickname={}", user.id(), user.kakaoAccount().profile().nickname());
             } else {
                 log.warn("[KAKAO] Fetch user returned null body");
             }
