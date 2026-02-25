@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/test/user").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/test/admin").hasRole("ADMIN")
 
+                        .requestMatchers("/api/v1/stock/**").permitAll()
+
                         // ping/echo open
                         .requestMatchers("/api/test/ping", "/api/test/echo").permitAll()
 
