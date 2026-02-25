@@ -72,10 +72,10 @@ public class StockMockService {
                 .toList();
     }
 
-    public StockSparklineResponse getSparkline(String code, int days) {
+    public StockSparklineResponse getSparkline(String code) {
         StockQuote quote = mockQuote(code);
-        List<BigDecimal> values = mockSparkline(days, quote.price());
-        return StockSparklineResponse.of(code, days, values);
+        List<BigDecimal> values = mockSparkline(30, quote.price());
+        return StockSparklineResponse.of(code, 30, values);
     }
 
     public void addFavorite(String code) {

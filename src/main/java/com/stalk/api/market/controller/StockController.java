@@ -3,11 +3,14 @@ package com.stalk.api.market.controller;
 import com.stalk.api.global.ApiResponse;
 import com.stalk.api.market.dto.*;
 import com.stalk.api.market.service.StockMockService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+@Tag(name = "주식(Market) API", description = "주식 대시보드, 즐겨찾기 및 스파크라인 조회")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/stock")
@@ -28,25 +31,27 @@ public class StockController {
 
     // 즐겨찾기 추가
     @PostMapping("/favorites/{code}")
-    public ResponseEntity<ApiResponse<Void>> addFavorite(@PathVariable String code) {
+    public ResponseEntity<ApiResponse<Void>> addFavorite(
+            @Parameter(description = "종목 코드", example = "005930") @PathVariable String code) {
         stockMockService.addFavorite(code);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
     // 즐겨찾기 삭제 (하트 누르면 사라짐)
     @DeleteMapping("/favorites/{code}")
-    public ResponseEntity<ApiResponse<Void>> removeFavorite(@PathVariable String code) {
+    public ResponseEntity<ApiResponse<Void>> removeFavorite(
+            @Parameter(description = "종목 코드", example = "005930") @PathVariable String code) {
         stockMockService.removeFavorite(code);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
     // 스파크라인 단독 조회
+    @Operation(summary = "스파크라인 조회", description = "특정 종목의 최근 가격 변동 차트 데이터를 조회")
     @GetMapping("/{code}/sparkline")
     public ApiResponse<StockSparklineResponse> getSparkline(
-            @PathVariable String code,
-            @RequestParam(defaultValue = "30") int days
+            @Parameter(description = "종목 코드", example = "005930") @PathVariable String code
     ) {
-        return ApiResponse.ok(stockMockService.getSparkline(code, days));
+        return ApiResponse.ok(stockMockService.getSparkline(code));
     }
 
 }
