@@ -2,11 +2,13 @@ package com.stalk.api.kis;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import java.time.Instant;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KisTokenService {
@@ -20,30 +22,47 @@ public class KisTokenService {
     public String getValidAccessToken() {
         Instant now = Instant.now();
         if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
+            log.info("KIS accessToken cache hit. expiresAt={}", expiresAt);
             return accessToken;
         }
         synchronized (this) {
             now = Instant.now();
             if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
+                log.info("KIS accessToken cache hit (after lock). expiresAt={}", expiresAt);
                 return accessToken;
             }
             TokenResponse res = issueToken();
             this.accessToken = res.accessToken();
             this.expiresAt = Instant.now().plusSeconds(res.expiresIn());
+
+            log.info("KIS accessToken issued successfully. expiresAt={}", expiresAt);
+
             return this.accessToken;
         }
     }
 
     private TokenResponse issueToken() {
+
+        log.info("KIS token request start");
+
         TokenRequest req = new TokenRequest("client_credentials", props.appkey(), props.appsecret());
 
-        return kisRestClient.post()
-                .uri(props.token().path())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(req)
-                .retrieve()
-                .body(TokenResponse.class);
+        try {
+            TokenResponse response = kisRestClient.post()
+                    .uri(props.token().path())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .body(req)
+                    .retrieve()
+                    .body(TokenResponse.class);
+
+            log.info("KIS token API response received");
+
+            return response;
+        } catch (Exception e) {
+            log.error("KIS token issuance failed", e);
+            throw e;
+        }
     }
 
     public record TokenRequest(
