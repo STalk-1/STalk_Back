@@ -1,8 +1,8 @@
 package com.stalk.api.market.dto;
 
-import com.stalk.api.market.Domain.ChangeDirection;
-import com.stalk.api.market.Domain.MarketType;
-import com.stalk.api.market.Domain.Stock;
+import com.stalk.api.market.domain.ChangeDirection;
+import com.stalk.api.market.domain.MarketType;
+import com.stalk.api.market.domain.Stock;
 import lombok.Builder;
 
 import java.math.BigDecimal;

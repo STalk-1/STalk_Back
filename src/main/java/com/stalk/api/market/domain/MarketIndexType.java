@@ -1,4 +1,4 @@
-package com.stalk.api.market.Domain;
+package com.stalk.api.market.domain;
 
 public enum MarketIndexType {
     KOSPI,

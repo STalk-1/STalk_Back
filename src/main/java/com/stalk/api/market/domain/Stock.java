@@ -1,4 +1,4 @@
-package com.stalk.api.market.Domain;
+package com.stalk.api.market.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

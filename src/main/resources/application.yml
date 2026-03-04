@@ -12,7 +12,7 @@ spring:
         name: stalk-api
 
     datasource:
-        url: jdbc:h2:mem:stalk;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+        url: jdbc:h2:mem:stalk:testdb
         driver-class-name: org.h2.Driver
         username: sa
         password:
@@ -49,3 +49,17 @@ jwt:
     secret: ${JWT_SECRET}
     access-token-seconds: 900        # 15분
     refresh-token-seconds: 1209600   # 14일
+
+
+kis:
+    base-url: https://openapi.koreainvestment.com:9443  # 실전
+    appkey: ${KIS_APPKEY}
+    appsecret: ${KIS_APPSECRET}
+    custtype: P                 # 개인: P, 법인: B
+
+    token:
+        path: /oauth2/tokenP
+
+    domestic: # 주식 현재가 조회용
+        inquire-price-path: /uapi/domestic-stock/v1/quotations/inquire-price
+        tr-id-inquire-price: FHKST01010100

@@ -1,6 +1,6 @@
 package com.stalk.api.market.dto;
 
-import com.stalk.api.market.Domain.ChangeDirection;
+import com.stalk.api.market.domain.ChangeDirection;
 
 import java.math.BigDecimal;
 

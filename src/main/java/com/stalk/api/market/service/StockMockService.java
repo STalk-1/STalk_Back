@@ -1,8 +1,8 @@
 package com.stalk.api.market.service;
 
-import com.stalk.api.market.Domain.MarketIndexType;
-import com.stalk.api.market.Domain.MarketType;
-import com.stalk.api.market.Domain.Stock;
+import com.stalk.api.market.domain.MarketIndexType;
+import com.stalk.api.market.domain.MarketType;
+import com.stalk.api.market.domain.Stock;
 import com.stalk.api.market.dto.*;
 import org.springframework.stereotype.Service;
 
