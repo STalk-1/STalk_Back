@@ -2,7 +2,7 @@
 name: Bug report
 about: 디버깅 관련
 title: '[BUG] '
-labels: '🚨 bug'
+labels: '🚨 Bug'
 assignees: ''
 ---
 
