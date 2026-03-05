@@ -63,3 +63,19 @@ kis:
     domestic: # 주식 현재가 조회용
         inquire-price-path: /uapi/domestic-stock/v1/quotations/inquire-price
         tr-id-inquire-price: FHKST01010100
+
+quotes:
+    poll:
+        enabled: true
+        fixed-delay-ms: 30000
+    watchlist:
+        - "000660"  # SK하이닉스
+        - "005930"  # 삼성전자
+        - "009150"  # 삼성전기
+        - "034730"  # SK
+        - "005380"  # 현대차
+        - "079550"  # LIG넥스원
+        - "272210"  # 한화시스템
+        - "064350"  # 현대로템
+        - "011200"  # HMM
+        - "006800"  # 미래에셋증권

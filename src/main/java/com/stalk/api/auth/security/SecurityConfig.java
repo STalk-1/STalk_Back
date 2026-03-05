@@ -49,6 +49,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/v1/stock/**").permitAll()
                         .requestMatchers("/quotes/**").permitAll()
+                        .requestMatchers("/top10/**").permitAll()
 
                         // ping/echo open
                         .requestMatchers("/api/test/ping", "/api/test/echo").permitAll()
