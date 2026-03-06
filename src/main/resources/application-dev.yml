@@ -61,6 +61,38 @@ kis:
   token:
     path: /oauth2/tokenP
 
-  domestic: # 주식 현재가 조회용
+  domestic:
+    # 주식 현재가 조회용
     inquire-price-path: /uapi/domestic-stock/v1/quotations/inquire-price
     tr-id-inquire-price: FHKST01010100
+
+    inquire-index-price-path: /uapi/domestic-stock/v1/quotations/inquire-index-price
+    tr-id-inquire-index-price: FHPUP02100000
+
+  overseas:
+    inquire-daily-chartprice-path: /uapi/overseas-price/v1/quotations/inquire-daily-chartprice
+    tr-id-inquire-daily-chartprice: FHKST03030100
+
+stocks:
+  poll:
+    fixed-delay-ms: 30000
+  watchlist:
+    - "000660"  # SK하이닉스
+    - "005930"  # 삼성전자
+    - "009150"  # 삼성전기
+    - "034730"  # SK
+    - "005380"  # 현대차
+    - "079550"  # LIG넥스원
+    - "272210"  # 한화시스템
+    - "064350"  # 현대로템
+    - "011200"  # HMM
+    - "006800"  # 미래에셋증권
+
+market:
+  domestic:
+    kospi-code: "0001"
+
+  overseas:
+    nasdaq-code: "IXIC"
+    sp500-code: "SPX"
+    usd-krw-code: "FX@KRW"
