@@ -9,8 +9,20 @@ public record KisProperties(
         String appsecret,
         String custtype,
         Token token,
-        Domestic domestic
+        Domestic domestic,
+        Overseas overseas
 ) {
     public record Token(String path) {}
-    public record Domestic(String inquirePricePath, String trIdInquirePrice) {}
+
+    public record Domestic(
+            String inquirePricePath,
+            String trIdInquirePrice,
+            String inquireIndexPricePath,
+            String trIdInquireIndexPrice
+    ) {}
+
+    public record Overseas(
+            String inquireDailyChartPricePath,
+            String trIdInquireDailyChartPrice
+    ) { }
 }

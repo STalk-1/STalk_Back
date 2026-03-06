@@ -53,6 +53,7 @@ jobs:
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_REDIRECT_URI_DEV=${{ secrets.KAKAO_REDIRECT_URI_DEV }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
+            TZ=Asia/Seoul
             EOF
             chmod 600 .env
             
