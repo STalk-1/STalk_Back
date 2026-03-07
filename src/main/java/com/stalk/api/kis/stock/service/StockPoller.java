@@ -2,6 +2,9 @@ package com.stalk.api.kis.stock.service;
 
 import com.stalk.api.kis.stock.StockProperties;
 import com.stalk.api.kis.stock.dto.KisInquirePriceResponse;
+import com.stalk.api.websocket.stock.StockRealtimeMessageMapper;
+import com.stalk.api.websocket.stock.StockRealtimePublisher;
+import com.stalk.api.websocket.stock.dto.QuoteUpdatedMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,15 +21,21 @@ public class StockPoller {
     private final KisDomesticStockService stockService;
     private final List<String> watchlist;
     private volatile Instant lastPolledAt;
+    private final StockRealtimePublisher publisher;
+    private final StockRealtimeMessageMapper messageMapper;
 
     private final Map<String, CachedStock> cache = new ConcurrentHashMap<>();
 
     public StockPoller(
             KisDomesticStockService stockService,
-            StockProperties properties
+            StockProperties properties,
+            StockRealtimePublisher publisher,
+            StockRealtimeMessageMapper messageMapper
     ) {
         this.stockService = stockService;
         this.watchlist = properties.watchlist();
+        this.publisher = publisher;
+        this.messageMapper = messageMapper;
         log.info("StockPoller initialized. watchlist={}", watchlist);
     }
 
@@ -43,7 +52,11 @@ public class StockPoller {
             try {
                 var res = stockService.inquirePrice(code, "J");
                 cache.put(code, new CachedStock(fetchedAt, res));
-                log.info("Successfully stock polled code: {}", code);
+
+                QuoteUpdatedMessage message = messageMapper.toQuoteUpdatedMessage(code, fetchedAt, res);
+                publisher.publishQuote(message);
+
+                log.info("Successfully stock polled code and publish to ws: {}", code);
             } catch (Exception e) {
                 log.error("Failed to poll code: {}. Error: {}", code, e.getMessage());
             }

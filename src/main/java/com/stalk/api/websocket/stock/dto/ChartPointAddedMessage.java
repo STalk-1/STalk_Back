@@ -1,7 +1,8 @@
-package com.stalk.api.kis.stock.dto.ws;
+package com.stalk.api.websocket.stock.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Schema(description = "실시간 차트 지점 추가 이벤트 메시지")
@@ -24,7 +25,7 @@ public record ChartPointAddedMessage(
             String symbol,
             String interval,
             OffsetDateTime time,
-            long close
+            BigDecimal close
     ) {
         return new ChartPointAddedMessage(
                 TYPE,
@@ -52,7 +53,7 @@ public record ChartPointAddedMessage(
             OffsetDateTime time,
 
             @Schema(description = "종가 (해당 시점 가격)", example = "72500")
-            long close
+            BigDecimal close
     ) {
     }
 }

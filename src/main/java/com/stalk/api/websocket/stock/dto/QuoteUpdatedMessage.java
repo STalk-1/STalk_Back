@@ -1,7 +1,9 @@
-package com.stalk.api.kis.stock.dto.ws;
+package com.stalk.api.websocket.stock.dto;
 
+import com.stalk.api.kis.model.Direction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Schema(description = "시세 업데이트 이벤트 메시지 (WebSocket/Push용)")
@@ -23,10 +25,10 @@ public record QuoteUpdatedMessage(
      */
     public static QuoteUpdatedMessage of(
             String symbol,
-            long price,
-            long change,
-            double changeRate,
-            String direction,
+            BigDecimal price,
+            BigDecimal change,
+            BigDecimal changeRate,
+            Direction direction,
             OffsetDateTime asOf
     ) {
         return new QuoteUpdatedMessage(
@@ -39,16 +41,16 @@ public record QuoteUpdatedMessage(
     @Schema(description = "업데이트된 시세 상세 정보")
     public record Data(
             @Schema(description = "현재가", example = "172500")
-            long price,
+            BigDecimal price,
 
             @Schema(description = "전일 대비 등락폭", example = "1200")
-            long change,
+            BigDecimal change,
 
             @Schema(description = "전일 대비 등락률 (%)", example = "1.68")
-            double changeRate,
+            BigDecimal changeRate,
 
             @Schema(description = "주가 변동 방향 (UP, DOWN, FLAT)", example = "UP")
-            String direction,
+            Direction direction,
 
             @Schema(description = "데이터 기준 시각", example = "2026-03-06T15:30:00+09:00")
             OffsetDateTime asOf

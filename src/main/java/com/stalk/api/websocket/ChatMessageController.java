@@ -1,7 +1,7 @@
 package com.stalk.api.websocket;
 
-import com.stalk.api.websocket.dto.ChatMessageResponse;
-import com.stalk.api.websocket.dto.ChatSendRequest;
+import com.stalk.api.websocket.chat.dto.ChatMessageResponse;
+import com.stalk.api.websocket.chat.dto.ChatSendRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;

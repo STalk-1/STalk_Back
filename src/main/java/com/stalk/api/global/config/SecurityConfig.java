@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers("/stocks/top10").permitAll()
                         .requestMatchers("/market").permitAll()
 
+                        .requestMatchers("/ws", "/ws/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

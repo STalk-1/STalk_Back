@@ -1,4 +1,4 @@
-package com.stalk.api.websocket.dto;
+package com.stalk.api.websocket.chat.dto;
 
 import java.time.Instant;
 
