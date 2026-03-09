@@ -33,6 +33,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(CustomPrincipal p) {
         return createToken(p, props.refreshTokenSeconds(), "refresh");
     }
+
     private String createToken(CustomPrincipal p, long ttlSeconds, String typ) {
         Instant now = Instant.now();
         Instant exp = now.plusSeconds(ttlSeconds);
