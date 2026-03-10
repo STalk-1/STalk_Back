@@ -57,7 +57,10 @@ public class SecurityConfig {
                         .requestMatchers("/stocks/top10").permitAll()
                         .requestMatchers("/market").permitAll()
 
+                        .requestMatchers("/stocks/favorites/**").hasAnyRole("USER", "ADMIN")
+
                         .requestMatchers("/ws", "/ws/**").permitAll()
+
 
                         .anyRequest().authenticated()
                 )

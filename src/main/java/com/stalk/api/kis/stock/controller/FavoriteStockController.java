@@ -1,6 +1,7 @@
 package com.stalk.api.kis.stock.controller;
 
 import com.stalk.api.auth.security.CustomPrincipal;
+import com.stalk.api.kis.stock.dto.FavoriteStockOverviewListResponse;
 import com.stalk.api.kis.stock.service.FavoriteStockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,5 +35,13 @@ public class FavoriteStockController {
             @Parameter(description = "종목 코드 (예: 005930)", example = "005930") @PathVariable String symbol) {
         favoriteStockService.removeFavoriteStock(principal.userId(), symbol);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "관심 종목 조회", description = "등록된 관심 종목 목록과 요약 차트 정보를 조회합니다.")
+    @GetMapping
+    public ResponseEntity<FavoriteStockOverviewListResponse> getFavoriteStocks(
+            @AuthenticationPrincipal CustomPrincipal principal) {
+        var response = favoriteStockService.getFavoriteStocks(principal.userId());
+        return ResponseEntity.ok(response);
     }
 }
