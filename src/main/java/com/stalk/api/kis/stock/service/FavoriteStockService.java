@@ -83,7 +83,7 @@ public class FavoriteStockService {
             if (chartAsOf == null) {
                 chartAsOf = java.time.OffsetDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
             }
-            Chart chart = new Chart("30m", chartPoints, chartAsOf);
+            Chart chart = new Chart("1m", chartPoints, chartAsOf);
 
             return new FavoriteStockOverviewItem(symbol, quote, chart);
         }).toList();
