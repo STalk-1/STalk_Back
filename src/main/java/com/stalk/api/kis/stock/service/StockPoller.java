@@ -47,7 +47,7 @@ public class StockPoller {
         log.info("StockPoller initialized. watchlist={}", watchlist);
     }
 
-    @Scheduled(fixedDelay=10000, initialDelayString = "5000")
+    @Scheduled(fixedDelay=1000, initialDelayString = "5000")
     public void poll(){
         if (watchlist.isEmpty()) {
             log.warn("Watchlist is empty. Check your 'quotes.watchlist' configuration.");
