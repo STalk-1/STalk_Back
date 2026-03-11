@@ -73,7 +73,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // yml에서 읽어온 리스트를 설정합니다.
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://stalk-lyart.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://s-talk.vercel.app/"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
 
