@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/test/admin").hasRole("ADMIN")
 
                         .requestMatchers("/stocks/top10").permitAll()
+                        .requestMatchers("/stocks/overview").permitAll()
                         .requestMatchers("/market").permitAll()
 
                         .requestMatchers("/stocks/favorites/**").hasAnyRole("USER", "ADMIN")

@@ -1,5 +1,6 @@
 package com.stalk.api.kis.stock.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.stalk.api.kis.model.Direction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -23,6 +24,7 @@ public record FavoriteStockOverviewListResponse(
             Quote quote,
 
             @Schema(description = "차트 데이터 정보")
+            @JsonInclude(JsonInclude.Include.NON_NULL)
             Chart chart
     ) {
     }
