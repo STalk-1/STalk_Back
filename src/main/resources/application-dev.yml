@@ -42,6 +42,7 @@ kakao:
   oauth:
     client-id: ${KAKAO_CLIENT_ID}
     redirect-uri: ${KAKAO_REDIRECT_URI_DEV}
+    frontend-redirect-uri: http://localhost:5173/
     token-uri: https://kauth.kakao.com/oauth/token
     user-uri: https://kapi.kakao.com/v2/user/me
 

@@ -1,18 +1,20 @@
 package com.stalk.api.auth.controller;
 
 import com.stalk.api.auth.config.KakaoOauthProperties;
-import com.stalk.api.auth.dto.KakaoTokenResponse;
-import com.stalk.api.auth.dto.KakaoUserResponse;
 import com.stalk.api.auth.service.KakaoLoginService;
-import com.stalk.api.auth.service.KakaoOauthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @Slf4j
 @RestController
@@ -40,7 +42,7 @@ public class KakaoAuthController {
 
     // 카카오가 code를 붙여서 redirect_uri로 콜백
     @GetMapping("/callback")
-    public ResponseEntity<KakaoLoginService.LoginResult> callback(
+    public ResponseEntity<Void> callback(
             @RequestParam String code,
             @RequestParam(required = false) String error,
             @RequestParam(required = false, name = "error_description") String errorDescription
@@ -48,10 +50,40 @@ public class KakaoAuthController {
         log.info("[KAKAO] Callback received");
         if (error != null) {
             log.warn("[KAKAO] Callback error. error={}, description={}", error, errorDescription);
-            throw new IllegalStateException("Kakao OAuth error=" + error + " desc=" + errorDescription);
+            
+            // 오류 시에도 프론트로 에러 정보와 함께 리다이렉트
+            String errorRedirectUrl = UriComponentsBuilder
+                    .fromUriString(props.frontendRedirectUri())
+                    .queryParam("error", error)
+                    .queryParam("error_description", errorDescription)
+                    .build()
+                    .toUriString();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(errorRedirectUrl)).build();
         }
 
         var result = kakaoLoginService.loginByAuthorizationCode(code);
-        return ResponseEntity.ok(result);
+        
+        // 쿠키 생성 (HttpOnly 적용)
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken", result.accessToken())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(900) // 15분
+                .build();
+                
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.refreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(1209600) // 14일
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .location(URI.create(props.frontendRedirectUri()))
+                .build();
     }
 }
