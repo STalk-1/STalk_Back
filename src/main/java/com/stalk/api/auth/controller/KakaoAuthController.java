@@ -2,6 +2,8 @@ package com.stalk.api.auth.controller;
 
 import com.stalk.api.auth.config.KakaoOauthProperties;
 import com.stalk.api.auth.service.KakaoLoginService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Tag(name = "Kakao 인증/인가", description = "카카오 소셜 로그인 api")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class KakaoAuthController {
     private final KakaoOauthProperties props;
 
     // 프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환
+    @Operation(summary = "카카오 인가 페이지 url 반환", description = "프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환")
     @GetMapping("/login-url")
     public ResponseEntity<String> loginUrl() {
         log.info("[KAKAO] Login URL requested");
@@ -41,6 +45,7 @@ public class KakaoAuthController {
     }
 
     // 카카오가 code를 붙여서 redirect_uri로 콜백
+    @Operation(summary = "callback", description = "카카오가 code를 붙여서 redirect_uri로 콜백")
     @GetMapping("/callback")
     public ResponseEntity<Void> callback(
             @RequestParam String code,

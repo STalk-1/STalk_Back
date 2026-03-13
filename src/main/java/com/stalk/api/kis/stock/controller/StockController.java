@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "[ver26.03.12]주식 조회", description = "주식 데이터 조회")
+@Tag(name = "주식 조회", description = "주식 데이터 조회")
 @RestController
 @RequiredArgsConstructor
 public class StockController {

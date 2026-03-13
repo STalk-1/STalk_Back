@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "[v26.03.07] 시장 지수", description = "메인 화면 시장 카드 조회 API")
+@Tag(name = "시장 지수", description = "메인 화면 시장 카드 조회 API")
 @RestController
 @RequiredArgsConstructor
 public class MarketController {

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Favorite Stocks", description = "관심 종목 API")
+@Tag(name = "관심 종목 조회", description = "관심 종목 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/stocks/favorites")
