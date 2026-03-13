@@ -80,17 +80,10 @@ public class KakaoAuthController {
                 .maxAge(1209600) // 14일
                 .build();
 
-        String successRedirectUrl = UriComponentsBuilder
-                .fromUriString(props.frontendRedirectUri())
-                .queryParam("userId", result.userId())
-                .queryParam("nickname", result.nickname())
-                .build()
-                .toUriString();
-
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .location(URI.create(successRedirectUrl))
+                .location(URI.create(props.frontendRedirectUri()))
                 .build();
     }
 }
