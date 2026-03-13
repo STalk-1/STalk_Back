@@ -72,7 +72,7 @@ public class KakaoAuthController {
         ResponseCookie accessCookie = ResponseCookie.from("accessToken", result.accessToken())
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .path("/")
                 .maxAge(900) // 15분
                 .build();
@@ -80,7 +80,7 @@ public class KakaoAuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.refreshToken())
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .path("/")
                 .maxAge(1209600) // 14일
                 .build();
