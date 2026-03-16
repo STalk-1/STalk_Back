@@ -1,5 +1,6 @@
 package com.stalk.api.kis.stock.service;
 
+import com.stalk.api.kis.model.Direction;
 import com.stalk.api.kis.stock.FavoriteStock;
 import com.stalk.api.kis.stock.StockMasterProvider;
 import com.stalk.api.kis.stock.repository.FavoriteStockRepository;
@@ -12,10 +13,15 @@ import com.stalk.api.kis.stock.dto.FavoriteStockOverviewListResponse.Chart;
 import com.stalk.api.kis.stock.dto.FavoriteStockOverviewListResponse.ChartPoint;
 import com.stalk.api.kis.stock.dto.FavoriteStockOverviewListResponse.FavoriteStockOverviewItem;
 import com.stalk.api.kis.stock.dto.FavoriteStockOverviewListResponse.Quote;
-import com.stalk.api.kis.model.DirectionMapper;
 import com.stalk.api.kis.stock.StockMaster;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import static com.stalk.api.kis.model.DirectionMapper.fromKisSign;
+import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
+import static java.lang.Math.abs;
 
 @RequiredArgsConstructor
 @Service
@@ -63,11 +69,11 @@ public class FavoriteStockService {
             if (cached != null) {
                 var output = cached.payload().output();
                 try {
-                    long price = Long.parseLong(output.currentPrice());
-                    long change = Math.abs(Long.parseLong(output.change()));
-                    double changeRate = Double.parseDouble(output.changeRate());
-                    com.stalk.api.kis.model.Direction dir = DirectionMapper.fromKisSign(output.sign());
-                    java.time.OffsetDateTime asOf = java.time.OffsetDateTime.ofInstant(cached.fetchedAt(), java.time.ZoneId.of("Asia/Seoul"));
+                    long price = parseLong(output.currentPrice());
+                    long change = abs(parseLong(output.change()));
+                    double changeRate = parseDouble(output.changeRate());
+                    Direction dir = fromKisSign(output.sign());
+                    OffsetDateTime asOf = OffsetDateTime.ofInstant(cached.fetchedAt(), java.time.ZoneId.of("Asia/Seoul"));
                     quote = new Quote(name, market, price, change, changeRate, dir, asOf);
                 } catch (Exception e) {
                     // ignore mapping errors
@@ -79,9 +85,9 @@ public class FavoriteStockService {
                     .map(p -> new ChartPoint(p.time(), p.close()))
                     .toList();
 
-            java.time.OffsetDateTime chartAsOf = stockPoller.getCurrentInterval();
+            OffsetDateTime chartAsOf = stockPoller.getCurrentInterval();
             if (chartAsOf == null) {
-                chartAsOf = java.time.OffsetDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+                chartAsOf = OffsetDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
             }
             Chart chart = new Chart("1m", chartPoints, chartAsOf);
 
