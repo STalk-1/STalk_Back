@@ -60,6 +60,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/stocks/favorites/**").hasAnyRole("USER", "ADMIN")
 
+                        .requestMatchers("/chat/rooms/**").permitAll()
+
                         .requestMatchers("/ws", "/ws/**").permitAll()
 
 
