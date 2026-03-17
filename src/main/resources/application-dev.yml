@@ -93,6 +93,6 @@ market:
     kospi-code: "0001"
 
   overseas:
-    nasdaq-code: "IXIC"
+    nasdaq-code: "NDX"
     sp500-code: "SPX"
     usd-krw-code: "FX@KRW"
