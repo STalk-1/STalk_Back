@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.stalk.api.websocket.chat.presentation.dto.ChatRoomUserCountResponse;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,7 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ChatRoomConnectionManager {
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     // symbol -> Set of session IDs
     // 특정 채팅방에 현재 누가 있는지 확인하는 용도(채팅방 인원수 계산)
@@ -41,12 +47,15 @@ public class ChatRoomConnectionManager {
 
         if (sessionId != null && destination != null && destination.startsWith(DESTINATION_PREFIX)) {
             String symbol = destination.substring(DESTINATION_PREFIX.length());
-            
-            roomSessions.computeIfAbsent(symbol, k -> Collections.synchronizedSet(new HashSet<>())).add(sessionId);
+            boolean isAdded = roomSessions.computeIfAbsent(symbol, k -> Collections.synchronizedSet(new HashSet<>())).add(sessionId);
             sessionRooms.computeIfAbsent(sessionId, k -> Collections.synchronizedSet(new HashSet<>())).add(symbol);
             
             if (subscriptionId != null) {
                 sessionSubscriptions.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>()).put(subscriptionId, symbol);
+            }
+
+            if (isAdded) {
+                broadcastUserCount(symbol);
             }
 
             log.info("[STOMP] SUBSCRIBE sessionId={}, symbol={}, subId={}, roomCount={}", 
@@ -67,7 +76,10 @@ public class ChatRoomConnectionManager {
                 if (symbol != null) {
                     Set<String> sessionsInRoom = roomSessions.get(symbol);
                     if (sessionsInRoom != null) {
-                        sessionsInRoom.remove(sessionId);
+                        boolean isRemoved = sessionsInRoom.remove(sessionId);
+                        if (isRemoved) {
+                            broadcastUserCount(symbol);
+                        }
                         if (sessionsInRoom.isEmpty()) {
                             roomSessions.remove(symbol);
                         }
@@ -106,7 +118,10 @@ public class ChatRoomConnectionManager {
                 for (String symbol : symbols) {
                     Set<String> sessionsInRoom = roomSessions.get(symbol);
                     if (sessionsInRoom != null) {
-                        sessionsInRoom.remove(sessionId);
+                        boolean isRemoved = sessionsInRoom.remove(sessionId);
+                        if (isRemoved) {
+                            broadcastUserCount(symbol);
+                        }
                         log.info("[STOMP] DISCONNECT Cleaned up sessionId={} from symbol={}, roomCount={}", 
                                 sessionId, symbol, sessionsInRoom.size());
                         
@@ -122,5 +137,11 @@ public class ChatRoomConnectionManager {
     public int getConnectedUserCount(String symbol) {
         Set<String> sessions = roomSessions.get(symbol);
         return sessions != null ? sessions.size() : 0;
+    }
+
+    private void broadcastUserCount(String symbol) {
+        int count = getConnectedUserCount(symbol);
+        ChatRoomUserCountResponse response = new ChatRoomUserCountResponse(symbol, count);
+        messagingTemplate.convertAndSend("/sub/chat." + symbol + ".count", response);
     }
 }
