@@ -142,6 +142,6 @@ public class ChatRoomConnectionManager {
     private void broadcastUserCount(String symbol) {
         int count = getConnectedUserCount(symbol);
         ChatRoomUserCountResponse response = new ChatRoomUserCountResponse(symbol, count);
-        messagingTemplate.convertAndSend("/sub/chat." + symbol + ".count", response);
+        messagingTemplate.convertAndSend("/sub/count." + symbol, response);
     }
 }
