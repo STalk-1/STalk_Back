@@ -49,7 +49,7 @@ kakao:
 jwt:
   issuer: stalk
   secret: ${JWT_SECRET}
-  access-token-seconds: 900        # 15분
+  access-token-seconds: 30        # 15분
   refresh-token-seconds: 1209600   # 14일
 
 kis:
