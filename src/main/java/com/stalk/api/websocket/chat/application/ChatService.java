@@ -21,6 +21,7 @@ public class ChatService {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMessageRepository chatMessageRepository;
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Transactional
     public void processAndSendMessage(ChatMessageRequest request) {
@@ -37,8 +38,7 @@ public class ChatService {
         ChatMessage savedMessage = chatMessageRepository.save(chatMessage);
 
         // 2. 한국 시간 기준으로 시:분 포맷 설정 (저장된 시간 기준)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String timeLabel = OffsetDateTime.ofInstant(savedMessage.getSentAt(), ZoneId.of("Asia/Seoul")).format(formatter);
+        String timeLabel = OffsetDateTime.ofInstant(savedMessage.getSentAt(), ZoneId.of("Asia/Seoul")).format(TIME_FORMATTER);
 
         ChatMessageResponse response = new ChatMessageResponse(
                 savedMessage.getId().toString(),
