@@ -101,3 +101,14 @@ market:
     nasdaq-code: "NDX"
     sp500-code: "SPX"
     usd-krw-code: "FX@KRW"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health # prometheus 엔드포인트 활성화
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true

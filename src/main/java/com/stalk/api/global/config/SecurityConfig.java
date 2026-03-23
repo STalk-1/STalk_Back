@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/test/user").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/test/admin").hasRole("ADMIN")
 
+                        .requestMatchers("/actuator/**").permitAll() // 프로메테우스가 접근 가능하게 허용
                         .requestMatchers("/stocks/top10").permitAll()
                         .requestMatchers("/stocks/overview").permitAll()
                         .requestMatchers("/market").permitAll()
