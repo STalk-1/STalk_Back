@@ -55,6 +55,8 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             KIS_APPKEY=${{ secrets.KIS_APPKEY }}
             KIS_APPSECRET=${{ secrets.KIS_APPSECRET }}
+            SUPABASE_DB_PASSWORD=${{ secrets.SUPABASE_DB_PASSWORD }}
+
             TZ=Asia/Seoul
             EOF
             chmod 600 .env
