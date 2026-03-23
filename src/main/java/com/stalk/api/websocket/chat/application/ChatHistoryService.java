@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,7 +22,8 @@ public class ChatHistoryService {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public List<ChatMessageResponse> getRecentMessages(String symbol) {
-        List<ChatMessage> messages = chatMessageRepository.findTop50BySymbolOrderBySentAtAsc(symbol);
+        List<ChatMessage> messages = chatMessageRepository.findTop50BySymbolOrderBySentAtDesc(symbol);
+        Collections.reverse(messages);
         
         return messages.stream()
                 .map(msg -> {
