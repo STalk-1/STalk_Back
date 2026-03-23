@@ -12,14 +12,18 @@ spring:
         name: stalk-api
 
     datasource:
-        url: jdbc:h2:mem:stalkdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-        driver-class-name: org.h2.Driver
-        username: sa
-        password:
+#        url: jdbc:h2:mem:stalkdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#        driver-class-name: org.h2.Driver
+#        username: sa
+#        password:
+        url: jdbc:postgresql://aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres
+        driver-class-name: org.postgresql.Driver
+        username: postgres.wxtovukiqavynznsumxx
+        password: ${SUPABASE_DB_PASSWORD}
 
     jpa:
         hibernate:
-            ddl-auto: update
+            ddl-auto: create-drop
         properties:
             hibernate:
                 format_sql: true
