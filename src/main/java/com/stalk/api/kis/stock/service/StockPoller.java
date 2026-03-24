@@ -49,7 +49,7 @@ public class StockPoller {
         log.info("StockPoller initialized. watchlist={}", watchlist);
     }
 
-    @Scheduled(fixedDelay=1000, initialDelayString = "5000")
+    @Scheduled(fixedDelay=30000, initialDelayString = "5000")
     public void poll(){
         if (watchlist.isEmpty()) {
             log.warn("Watchlist is empty. Check your 'quotes.watchlist' configuration.");
@@ -109,13 +109,13 @@ public class StockPoller {
                     publisher.publishChartPointAdded(code, "1m", activeInterval, new BigDecimal(currentPrice));
                 }
 
-                log.info("Successfully stock polled code and publish to ws: {}", code);
+//                log.info("Successfully stock polled code and publish to ws: {}", code);
             } catch (Exception e) {
                 log.error("Failed to poll code: {}. Error: {}", code, e.getMessage());
             }
         }
         lastPolledAt = fetchedAt;
-        log.info("QuotePoller cycle finished.lastPolledAt: {}", lastPolledAt);
+//        log.info("QuotePoller cycle finished.lastPolledAt: {}", lastPolledAt);
     }
 
     public CachedStock getCached(String code) {

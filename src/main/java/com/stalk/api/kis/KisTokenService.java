@@ -22,20 +22,20 @@ public class KisTokenService {
     public String getValidAccessToken() {
         Instant now = Instant.now();
         if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
-            log.info("KIS accessToken cache hit. expiresAt={}", expiresAt);
+//            log.info("KIS accessToken cache hit. expiresAt={}", expiresAt);
             return accessToken;
         }
         synchronized (this) {
             now = Instant.now();
             if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
-                log.info("KIS accessToken cache hit (after lock). expiresAt={}", expiresAt);
+//                log.info("KIS accessToken cache hit (after lock). expiresAt={}", expiresAt);
                 return accessToken;
             }
             TokenResponse res = issueToken();
             this.accessToken = res.accessToken();
             this.expiresAt = Instant.now().plusSeconds(res.expiresIn());
 
-            log.info("KIS accessToken issued successfully. expiresAt={}", expiresAt);
+//            log.info("KIS accessToken issued successfully. expiresAt={}", expiresAt);
 
             return this.accessToken;
         }

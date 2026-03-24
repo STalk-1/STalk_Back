@@ -24,7 +24,7 @@ public class MarketPoller {
 
     @Scheduled(fixedDelay = 30000, initialDelayString = "5000")
     public void poll() {
-        log.info("Starting market polling...");
+//        log.info("Starting market polling...");
         Instant fetchedAt = Instant.now();
 
         try {
@@ -32,7 +32,7 @@ public class MarketPoller {
             cachedMarket = new CachedMarket(fetchedAt, response);
             lastPolledAt = fetchedAt;
 
-            log.info("Market polling finished successfully. lastPolledAt={}", lastPolledAt);
+//            log.info("Market polling finished successfully. lastPolledAt={}", lastPolledAt);
         } catch (Exception e) {
             log.error("Failed to poll market data. Error: {}", e.getMessage(), e);
         }
