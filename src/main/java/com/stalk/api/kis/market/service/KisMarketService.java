@@ -46,14 +46,14 @@ public class KisMarketService {
     }
 
     public MarketResponse getMarket() {
-        log.info("시장 지표 종합 조회 시작");
+        log.info("[MARKET_KIS] 시장 지표 종합 조회 시작");
         List<MarketResponse.MarketItem> markets = List.of(
                 inquireKospi(),
                 inquireNasdaq(),
                 inquireSp500(),
                 inquireUsdKrw()
         );
-        log.info("시장 지표 종합 조회 완료");
+        log.info("[MARKET_KIS] 시장 지표 종합 조회 완료");
 
         return new MarketResponse(
                 OffsetDateTime.now(),
@@ -62,7 +62,7 @@ public class KisMarketService {
     }
 
     public MarketResponse.MarketItem inquireKospi(){
-        log.info("KOSPI 지수 조회 시작");
+        log.info("[MARKET_KIS] KOSPI 지수 조회 시작");
         String token = tokenService.getValidAccessToken();
 
         KisDomesticIndexPriceResponse res = kisRestClient.get()
@@ -82,16 +82,16 @@ public class KisMarketService {
                 .body(KisDomesticIndexPriceResponse.class);
 
         if (res == null) {
-            log.error("KOSPI 조회 실패: 응답 바디가 비어있음");
+            log.error("[MARKET_KIS] KOSPI 조회 실패: 응답 바디가 비어있음");
             throw new IllegalArgumentException("KIS inquireKospi: empty response");
         }
 
         if (!"0".equals(res.rtCd())) {
-            log.error("KOSPI 조회 API 에러: rtCd={}, msgCd={}, msg='{}'", res.rtCd(), res.msgCd(), res.msg1());
+            log.error("[MARKET_KIS] KOSPI 조회 API 에러: rtCd={}, msgCd={}, msg='{}'", res.rtCd(), res.msgCd(), res.msg1());
             throw new IllegalStateException("KIS inquireKospi failed: " + res.msgCd() + " / " + res.msg1());
         }
 
-        log.info("KOSPI 조회 성공: 현재가={}, 등락={}", res.output().currentPrice(), res.output().change());
+        log.info("[MARKET_KIS] KOSPI 조회 성공: 현재가={}, 등락={}", res.output().currentPrice(), res.output().change());
 
         KisDomesticIndexPriceResponse.Output output = res.output();
 
@@ -134,7 +134,7 @@ public class KisMarketService {
             String marketDivCode,
             String inputIscd
     ) {
-        log.info("해외 시장 지표 조회 시작: name={}, code={}", displayName, inputIscd);
+        log.info("[MARKET_KIS] 해외 시장 지표 조회 시작: name={}, code={}", displayName, inputIscd);
         String token = tokenService.getValidAccessToken();
 
         LocalDate today = LocalDate.now();
@@ -160,18 +160,18 @@ public class KisMarketService {
                 .body(KisOverseasChartPriceResponse.class);
 
         if (res == null) {
-            log.error("해외시장({}) 조회 실패: 응답 바디가 비어있음", displayName);
+            log.error("[MARKET_KIS] 해외시장({}) 조회 실패: 응답 바디가 비어있음", displayName);
             throw new IllegalStateException("KIS inquireOverseasMarket(" + displayName + "): empty response");
         }
         if (!"0".equals(res.rtCd())) {
-            log.error("해외시장({}) 조회 실패: msgCd={}, msg1={}", displayName, res.msgCd(), res.msg1());
+            log.error("[MARKET_KIS] 해외시장({}) 조회 실패: msgCd={}, msg1={}", displayName, res.msgCd(), res.msg1());
             throw new IllegalStateException(
                     "KIS inquireOverseasMarket(" + displayName + ") failed: " + res.msgCd() + " / " + res.msg1()
             );
         }
 
 
-        log.info("해외 시장({}) 조회 성공: 현재가={}", displayName, res.output1().currentPrice());
+        log.info("[MARKET_KIS] 해외 시장({}) 조회 성공: 현재가={}", displayName, res.output1().currentPrice());
         KisOverseasChartPriceResponse.Output1 output1 = res.output1();
 
         return new MarketResponse.MarketItem(

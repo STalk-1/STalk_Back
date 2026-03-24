@@ -19,12 +19,12 @@ public class MarketPoller {
 
     public MarketPoller(KisMarketService kisMarketService) {
         this.kisMarketService = kisMarketService;
-        log.info("MarketPoller initialized.");
+        log.info("[MARKET] MarketPoller initialized.");
     }
 
     @Scheduled(fixedDelay = 30000, initialDelayString = "5000")
     public void poll() {
-//        log.info("Starting market polling...");
+        log.info("[MARKET] Starting market polling...");
         Instant fetchedAt = Instant.now();
 
         try {
@@ -32,9 +32,9 @@ public class MarketPoller {
             cachedMarket = new CachedMarket(fetchedAt, response);
             lastPolledAt = fetchedAt;
 
-//            log.info("Market polling finished successfully. lastPolledAt={}", lastPolledAt);
+            log.info("[MARKET] Market polling finished successfully. lastPolledAt={}", lastPolledAt);
         } catch (Exception e) {
-            log.error("Failed to poll market data. Error: {}", e.getMessage(), e);
+            log.error("[MARKET] Failed to poll market data. Error: {}", e.getMessage(), e);
         }
     }
 

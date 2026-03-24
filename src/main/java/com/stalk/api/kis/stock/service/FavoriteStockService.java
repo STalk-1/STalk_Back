@@ -5,6 +5,7 @@ import com.stalk.api.kis.stock.FavoriteStock;
 import com.stalk.api.kis.stock.StockMasterProvider;
 import com.stalk.api.kis.stock.repository.FavoriteStockRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 import static java.lang.Math.abs;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class FavoriteStockService {

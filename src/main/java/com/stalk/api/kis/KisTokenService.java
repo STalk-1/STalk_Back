@@ -22,20 +22,20 @@ public class KisTokenService {
     public String getValidAccessToken() {
         Instant now = Instant.now();
         if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
-//            log.info("KIS accessToken cache hit. expiresAt={}", expiresAt);
+            log.debug("[TOKEN_KIS] KIS accessToken cache hit. expiresAt={}", expiresAt);
             return accessToken;
         }
         synchronized (this) {
             now = Instant.now();
             if (accessToken != null && expiresAt != null && now.isBefore(expiresAt.minusSeconds(60))) {
-//                log.info("KIS accessToken cache hit (after lock). expiresAt={}", expiresAt);
+                log.debug("[TOKEN_KIS] KIS accessToken cache hit (after lock). expiresAt={}", expiresAt);
                 return accessToken;
             }
             TokenResponse res = issueToken();
             this.accessToken = res.accessToken();
             this.expiresAt = Instant.now().plusSeconds(res.expiresIn());
 
-//            log.info("KIS accessToken issued successfully. expiresAt={}", expiresAt);
+            log.debug("[TOKEN_KIS] KIS accessToken issued successfully. expiresAt={}", expiresAt);
 
             return this.accessToken;
         }
@@ -43,7 +43,7 @@ public class KisTokenService {
 
     private TokenResponse issueToken() {
 
-        log.info("KIS token request start");
+        log.info("[TOKEN_KIS] KIS token request start");
 
         TokenRequest req = new TokenRequest("client_credentials", props.appkey(), props.appsecret());
 
@@ -56,11 +56,11 @@ public class KisTokenService {
                     .retrieve()
                     .body(TokenResponse.class);
 
-            log.info("KIS token API response received");
+            log.info("[TOKEN_KIS] KIS token API response received");
 
             return response;
         } catch (Exception e) {
-            log.error("KIS token issuance failed", e);
+            log.error("[TOKEN_KIS] KIS token issuance failed", e);
             throw e;
         }
     }

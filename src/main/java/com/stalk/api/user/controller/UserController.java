@@ -31,6 +31,8 @@ public class UserController {
         User user = userRepository.findById(principal.userId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + principal.userId()));
                 
+        log.info("[USER] getMyInfo success. userId={}, nickname={}", user.getId(), user.getNickname());
+        
         return ResponseEntity.ok(UserInfoResponse.from(user));
     }
 }

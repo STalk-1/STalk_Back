@@ -46,17 +46,17 @@ public class StockPoller {
         this.watchlist = properties.watchlist();
         this.publisher = publisher;
         this.messageMapper = messageMapper;
-        log.info("StockPoller initialized. watchlist={}", watchlist);
+        log.info("[STOCK_POLLER] Initialized. watchlist={}", watchlist);
     }
 
     @Scheduled(fixedDelay=30000, initialDelayString = "5000")
     public void poll(){
         if (watchlist.isEmpty()) {
-            log.warn("Watchlist is empty. Check your 'quotes.watchlist' configuration.");
+            log.warn("[STOCK_POLLER] Watchlist is empty. Check your 'quotes.watchlist' configuration.");
             return;
         }
 
-        log.info("Starting stock polling for {} items...", watchlist.size());
+        log.debug("[STOCK_POLLER] Starting stock polling for {} items...", watchlist.size());
 
         Instant fetchedAt = Instant.now();
         OffsetDateTime nowKst = OffsetDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
@@ -109,13 +109,13 @@ public class StockPoller {
                     publisher.publishChartPointAdded(code, "1m", activeInterval, new BigDecimal(currentPrice));
                 }
 
-//                log.info("Successfully stock polled code and publish to ws: {}", code);
+                log.debug("[STOCK_POLLER] Successfully polled and published code: {}", code);
             } catch (Exception e) {
-                log.error("Failed to poll code: {}. Error: {}", code, e.getMessage());
+                log.error("[STOCK_POLLER] Failed to poll code: {}. Error: {}", code, e.getMessage());
             }
         }
         lastPolledAt = fetchedAt;
-//        log.info("QuotePoller cycle finished.lastPolledAt: {}", lastPolledAt);
+        log.debug("[STOCK_POLLER] Cycle finished. lastPolledAt: {}", lastPolledAt);
     }
 
     public CachedStock getCached(String code) {

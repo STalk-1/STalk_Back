@@ -24,11 +24,11 @@ public class MarketService {
         MarketPoller.CachedMarket cached = marketPoller.getCached();
 
         if (cached != null && cached.payload() != null) {
-            log.info("Returning cached market data. fetchedAt={}", cached.fetchedAt());
+            log.info("[MARKET] Returning cached market data. fetchedAt={}", cached.fetchedAt());
             return cached.payload();
         }
 
-        log.warn("Cached market data not found. Fetching directly from KIS...");
+        log.warn("[MARKET] Cached market data not found. Fetching directly from KIS...");
         return kisMarketService.getMarket();
     }
 }
