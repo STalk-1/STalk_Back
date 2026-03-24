@@ -1,10 +1,8 @@
 package com.stalk.api.kis.stock.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.stalk.api.kis.KisProperties;
 import com.stalk.api.kis.KisTokenService;
 import com.stalk.api.kis.stock.dto.KisInquirePriceResponse;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
