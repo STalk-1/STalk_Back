@@ -111,7 +111,7 @@ public class StockPoller {
 
                 log.debug("[STOCK_POLLER] Successfully polled and published code: {}", code);
             } catch (Exception e) {
-                log.error("[STOCK_POLLER] Failed to poll code: {}. Error: {}", code, e.getMessage());
+                log.error("[STOCK_POLLER] Failed to poll code: {}. Error: {}", code, e.getMessage(), e);
             }
         }
         lastPolledAt = fetchedAt;
