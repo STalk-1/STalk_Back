@@ -53,7 +53,7 @@ public class KakaoLoginService {
         String access = jwtTokenProvider.createAccessToken(principal);
         String refresh = jwtTokenProvider.createRefreshToken(principal);
 
-        log.info("[AUTH] Login issued tokens. userId={}, kakaoId={}, role={}, status={}",
+        log.info("[AUTH] Login issued tokens. userId={}, kakaoId={}, nickname={}, role={}, status={}",
                 user.getId(), user.getKakaoId(), user.getNickname(), user.getRole(), user.getStatus());
 
         return new LoginResult(
