@@ -1,6 +1,7 @@
 package com.stalk.api.auth.controller;
 
 import com.stalk.api.auth.config.KakaoOauthProperties;
+import com.stalk.api.auth.jwt.JwtProperties;
 import com.stalk.api.auth.service.KakaoLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,7 @@ public class KakaoAuthController {
 
     private final KakaoLoginService kakaoLoginService;
     private final KakaoOauthProperties props;
+    private final JwtProperties jwtProperties;
 
     // 프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환
     @Operation(summary = "카카오 인가 페이지 url 반환", description = "프론트가 이 URL 로 이동시키면 카카오 인가 페이지 url 반환")
@@ -74,15 +76,15 @@ public class KakaoAuthController {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(900) // 15분
+                .maxAge(jwtProperties.accessTokenSeconds())
                 .build();
-                
+
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.refreshToken())
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
                 .path("/")
-                .maxAge(1209600) // 14일
+                .maxAge(jwtProperties.refreshTokenSeconds())
                 .build();
 
         return ResponseEntity.status(HttpStatus.FOUND)
