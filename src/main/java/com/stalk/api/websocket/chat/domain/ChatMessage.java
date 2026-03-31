@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -32,7 +31,6 @@ public class ChatMessage {
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
-    @CreationTimestamp
     @Column(name = "sent_at", updatable = false, nullable = false)
     private Instant sentAt;
 
@@ -41,5 +39,6 @@ public class ChatMessage {
         this.symbol = symbol;
         this.sender = sender;
         this.content = content;
+        this.sentAt = Instant.now();
     }
 }
