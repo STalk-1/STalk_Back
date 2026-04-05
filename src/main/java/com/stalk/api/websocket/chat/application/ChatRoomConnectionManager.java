@@ -2,13 +2,7 @@ package com.stalk.api.websocket.chat.application;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.lang.Nullable;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ExecutorChannelInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
@@ -26,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChatRoomConnectionManager implements ExecutorChannelInterceptor {
+public class ChatRoomConnectionManager {
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -70,17 +64,9 @@ public class ChatRoomConnectionManager implements ExecutorChannelInterceptor {
             log.info("[STOMP] SUBSCRIBE sessionId={}, symbol={}, subId={}, roomCount={}",
                     sessionId, symbol, subscriptionId, getConnectedUserCount(symbol));
         }
-    }
 
-    // /sub/count.{symbol} 구독 완료 후(구독이 broker에 등록된 이후) 현재 인원수를 전송
-    // SessionSubscribeEvent는 구독 등록 전에 발행되므로, afterMessageHandled를 사용해야 새 구독자에게 전달됨
-    @Override
-    public void afterMessageHandled(Message<?> message, MessageChannel channel, MessageHandler handler, @Nullable Exception ex) {
-        if (ex != null) return;
-        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        if (!StompCommand.SUBSCRIBE.equals(accessor.getCommand())) return;
-        String destination = accessor.getDestination();
-        if (destination != null && destination.startsWith(COUNT_DESTINATION_PREFIX)) {
+        // /sub/count.{symbol} 구독 시 현재 인원수를 즉시 전송
+        if (destination.startsWith(COUNT_DESTINATION_PREFIX)) {
             String symbol = destination.substring(COUNT_DESTINATION_PREFIX.length());
             broadcastUserCount(symbol);
         }
