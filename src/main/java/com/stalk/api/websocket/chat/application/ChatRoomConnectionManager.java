@@ -37,6 +37,7 @@ public class ChatRoomConnectionManager {
     private final Map<String, Map<String, String>> sessionSubscriptions = new ConcurrentHashMap<>();
 
     private static final String DESTINATION_PREFIX = "/sub/chat.";
+    private static final String COUNT_DESTINATION_PREFIX = "/sub/count.";
 
     @EventListener
     public void onSessionSubscribe(SessionSubscribeEvent event) {
@@ -45,11 +46,13 @@ public class ChatRoomConnectionManager {
         String destination = accessor.getDestination();
         String subscriptionId = accessor.getSubscriptionId();
 
-        if (sessionId != null && destination != null && destination.startsWith(DESTINATION_PREFIX)) {
+        if (sessionId == null || destination == null) return;
+
+        if (destination.startsWith(DESTINATION_PREFIX)) {
             String symbol = destination.substring(DESTINATION_PREFIX.length());
             boolean isAdded = roomSessions.computeIfAbsent(symbol, k -> Collections.synchronizedSet(new HashSet<>())).add(sessionId);
             sessionRooms.computeIfAbsent(sessionId, k -> Collections.synchronizedSet(new HashSet<>())).add(symbol);
-            
+
             if (subscriptionId != null) {
                 sessionSubscriptions.computeIfAbsent(sessionId, k -> new ConcurrentHashMap<>()).put(subscriptionId, symbol);
             }
@@ -58,8 +61,14 @@ public class ChatRoomConnectionManager {
                 broadcastUserCount(symbol);
             }
 
-            log.info("[STOMP] SUBSCRIBE sessionId={}, symbol={}, subId={}, roomCount={}", 
+            log.info("[STOMP] SUBSCRIBE sessionId={}, symbol={}, subId={}, roomCount={}",
                     sessionId, symbol, subscriptionId, getConnectedUserCount(symbol));
+        }
+
+        // /sub/count.{symbol} 구독 시 현재 인원수를 즉시 전송
+        if (destination.startsWith(COUNT_DESTINATION_PREFIX)) {
+            String symbol = destination.substring(COUNT_DESTINATION_PREFIX.length());
+            broadcastUserCount(symbol);
         }
     }
 
