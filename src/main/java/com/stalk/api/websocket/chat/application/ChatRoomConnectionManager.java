@@ -37,7 +37,7 @@ public class ChatRoomConnectionManager {
     private final Map<String, Map<String, String>> sessionSubscriptions = new ConcurrentHashMap<>();
 
     private static final String DESTINATION_PREFIX = "/sub/chat.";
-    private static final String COUNT_DESTINATION_PREFIX = "/sub/count.";
+    private static final String COUNT_DESTINATION_SUFFIX = ".count";
 
     @EventListener
     public void onSessionSubscribe(SessionSubscribeEvent event) {
@@ -48,7 +48,7 @@ public class ChatRoomConnectionManager {
 
         if (sessionId == null || destination == null) return;
 
-        if (destination.startsWith(DESTINATION_PREFIX)) {
+        if (destination.startsWith(DESTINATION_PREFIX) && !destination.endsWith(COUNT_DESTINATION_SUFFIX)) {
             String symbol = destination.substring(DESTINATION_PREFIX.length());
             boolean isAdded = roomSessions.computeIfAbsent(symbol, k -> Collections.synchronizedSet(new HashSet<>())).add(sessionId);
             sessionRooms.computeIfAbsent(sessionId, k -> Collections.synchronizedSet(new HashSet<>())).add(symbol);
@@ -65,9 +65,12 @@ public class ChatRoomConnectionManager {
                     sessionId, symbol, subscriptionId, getConnectedUserCount(symbol));
         }
 
-        // /sub/count.{symbol} 구독 시 현재 인원수를 즉시 전송
-        if (destination.startsWith(COUNT_DESTINATION_PREFIX)) {
-            String symbol = destination.substring(COUNT_DESTINATION_PREFIX.length());
+        // /sub/chat.{symbol}.count 구독 시 현재 인원수를 즉시 전송
+        if (destination.startsWith(DESTINATION_PREFIX) && destination.endsWith(COUNT_DESTINATION_SUFFIX)) {
+            String symbol = destination.substring(
+                DESTINATION_PREFIX.length(),
+                destination.length() - COUNT_DESTINATION_SUFFIX.length()
+            );
             broadcastUserCount(symbol);
         }
     }
@@ -151,6 +154,6 @@ public class ChatRoomConnectionManager {
     private void broadcastUserCount(String symbol) {
         int count = getConnectedUserCount(symbol);
         ChatRoomUserCountResponse response = new ChatRoomUserCountResponse(symbol, count);
-        messagingTemplate.convertAndSend("/sub/count." + symbol, response);
+        messagingTemplate.convertAndSend(DESTINATION_PREFIX + symbol + COUNT_DESTINATION_SUFFIX, response);
     }
 }
