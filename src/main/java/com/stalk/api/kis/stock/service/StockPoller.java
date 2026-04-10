@@ -110,6 +110,12 @@ public class StockPoller {
                 }
 
                 log.debug("[STOCK_POLLER] Successfully polled and published code: {}", code);
+                try{
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
             } catch (Exception e) {
                 log.error("[STOCK_POLLER] Failed to poll code: {}. Error: {}", code, e.getMessage(), e);
             }
